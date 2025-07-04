@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
+from utils.pdf_export import teklif_pdf_olustur, siparis_pdf_olustur
+from utils.tcmb_kur import get_tcmb_kurlar
 
 class TeklifUygulamasi:
     def __init__(self, root):
@@ -50,22 +52,20 @@ class TeklifUygulamasi:
         musteri_adi = self.entry_musteri.get()
         messagebox.showinfo("Müşteri", f"{musteri_adi} başarıyla kaydedildi.")
 
+
     def teklif_kaydet(self):
         teklif = self.text_teklif.get("1.0", tk.END).strip()
-        tarih = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dosya_adi = f"Teklif_{tarih}.txt"
-        with open(dosya_adi, "w", encoding="utf-8") as f:
-            f.write(teklif)
-        messagebox.showinfo("Teklif", f"Teklif kaydedildi: {dosya_adi}")
-
+        musteri_adi = self.entry_musteri.get() or "Musteri"
+        dosya_adi = teklif_pdf_olustur(teklif, musteri_adi)
+        messagebox.showinfo("Teklif", f"PDF olarak kaydedildi:\n{dosya_adi}")
+        
+  
     def siparis_kaydet(self):
         siparis = self.text_siparis.get("1.0", tk.END).strip()
-        tedarikci = self.entry_tedarikci.get()
-        tarih = datetime.now().strftime("%Y%m%d_%H%M%S")
-        dosya_adi = f"Siparis_{tarih}_{tedarikci}.txt"
-        with open(dosya_adi, "w", encoding="utf-8") as f:
-            f.write(siparis)
-        messagebox.showinfo("Sipariş", f"Sipariş kaydedildi: {dosya_adi}")
+        tedarikci = self.entry_tedarikci.get() or "Tedarikci"
+        dosya_adi = siparis_pdf_olustur(siparis, tedarikci)
+        messagebox.showinfo("Sipariş", f"PDF olarak kaydedildi:\n{dosya_adi}")
+
 
 if __name__ == "__main__":
     root = tk.Tk()
